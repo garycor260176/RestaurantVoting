@@ -1,4 +1,4 @@
-package ru.javaops.topjava2.config;
+package ru.javaops.topjava2.model.config;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;

@@ -1,4 +1,4 @@
-package ru.javaops.topjava2.config;
+package ru.javaops.topjava2.model.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;

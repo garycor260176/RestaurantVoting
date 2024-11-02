@@ -3,23 +3,17 @@ package ru.javaops.topjava2.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import lombok.*;
 import org.hibernate.validator.constraints.Range;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Entity
-@Table(name = "lunch")
+@Table(name = "lunch", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "date", "restaurant_id"}, name = "restaurant_unique_name_date_restaurant_idx")})
 @Getter
 @Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class Lunch extends NamedEntity {
     @NotNull
@@ -33,7 +27,6 @@ public class Lunch extends NamedEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     @ToString.Exclude
     @JsonBackReference
     private Restaurant restaurant;
@@ -46,9 +39,5 @@ public class Lunch extends NamedEntity {
 
     public Lunch(Lunch lunch) {
         this(lunch.id, lunch.name, lunch.date, lunch.price);
-    }
-
-    public int getRestaurantId( ) {
-        return Objects.isNull(restaurant) ? 0 : restaurant.getId();
     }
 }

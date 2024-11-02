@@ -1,4 +1,4 @@
-package ru.javaops.topjava2.config;
+package ru.javaops.topjava2.model.config;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

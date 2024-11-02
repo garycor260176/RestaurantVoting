@@ -1,4 +1,4 @@
-package ru.javaops.topjava2.config;
+package ru.javaops.topjava2.model.config;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -52,6 +52,5 @@ public class LunchTestData {
     public static final Lunch lunch24 = new Lunch(LUNCH1_ID+23, "Жюльен с грибами", LocalDate.of(2024,10,10), new BigDecimal("650.00"));
     public static final Lunch lunch25 = new Lunch(LUNCH1_ID+24, "Костромские щи", LocalDate.of(2024,10,10), new BigDecimal("790.00"));
 
-    public static final List<Lunch> LUNCHES = Arrays.asList(lunch1, lunch2, lunch3, lunch4, lunch5, lunch6, lunch7, lunch8, lunch9, lunch10, lunch11,
-            lunch12, lunch13, lunch14, lunch15, lunch16, lunch17, lunch18, lunch19, lunch20, lunch21, lunch22, lunch23, lunch24, lunch25);
+    public static final List<Lunch> CURRENT_MENU2 = Arrays.asList(lunch8, lunch1, lunch6, lunch4);
 }

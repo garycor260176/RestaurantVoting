@@ -4,8 +4,15 @@ import lombok.experimental.UtilityClass;
 import ru.javaops.topjava2.HasId;
 import ru.javaops.topjava2.error.IllegalRequestDataException;
 
+import java.time.LocalTime;
+
 @UtilityClass
 public class ValidationUtil {
+    public static LocalTime CUT_OFF_TIME = LocalTime.of(11, 0);
+
+    public static void setCUT_OFF_TIME(LocalTime time) {
+        ValidationUtil.CUT_OFF_TIME = time;
+    }
 
     public static void checkNew(HasId bean) {
         if (!bean.isNew()) {

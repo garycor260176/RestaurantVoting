@@ -35,6 +35,7 @@ class LunchControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_MAIL)
     void get() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL_SLASH + LUNCH1_ID))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(LUNCH_MATCHER.contentJson(lunch1));
@@ -57,17 +58,18 @@ class LunchControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL))
+        perform(MockMvcRequestBuilders.get(REST_URL)
+                .param("restaurantId", "1"))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(LUNCH_MATCHER.contentJson(LUNCHES));
+                .andExpect(LUNCH_MATCHER.contentJson(CURRENT_MENU2));
     }
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void createWithLocation() throws Exception {
-        LunchTo dishTo = new LunchTo(null, "Водка", LocalDate.now(), new BigDecimal("1000"));
-        Lunch newLunch = LunchUtil.createNewFromTo(dishTo);
+        Lunch newLunch = new Lunch(null, "Водка", LocalDate.now(), new BigDecimal("1000"));
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .param("restaurantId", "2")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -83,10 +85,20 @@ class LunchControllerTest extends AbstractControllerTest {
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
+    void createDuplicate() throws Exception {
+        Lunch newLunch = new Lunch(null, lunch1.getName(), lunch1.getDate(), lunch1.getPrice());
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+                .param("restaurantId", "1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newLunch)))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
     void update() throws Exception {
         LunchTo updatedTo = new LunchTo(null, lunch1.getName(), lunch1.getDate(), new BigDecimal("10000.00"));
         perform(MockMvcRequestBuilders.put(REST_URL_SLASH + lunch1.getId())
-                .param("restaurantId", "1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updatedTo)))
                 .andDo(print())

@@ -7,7 +7,7 @@ import ru.javaops.topjava2.model.User;
 
 import java.util.Optional;
 
-import static ru.javaops.topjava2.config.SecurityConfig.PASSWORD_ENCODER;
+import static ru.javaops.topjava2.model.config.SecurityConfig.PASSWORD_ENCODER;
 
 @Transactional(readOnly = true)
 public interface UserRepository extends BaseRepository<User> {

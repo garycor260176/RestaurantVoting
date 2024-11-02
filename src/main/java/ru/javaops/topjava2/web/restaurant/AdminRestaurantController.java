@@ -1,21 +1,21 @@
 package ru.javaops.topjava2.web.restaurant;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javaops.topjava2.error.IllegalRequestDataException;
 import ru.javaops.topjava2.model.Restaurant;
-import ru.javaops.topjava2.repository.RestaurantRepository;
 import ru.javaops.topjava2.to.RestaurantTo;
 import ru.javaops.topjava2.util.RestaurantUtil;
 import ru.javaops.topjava2.util.validation.ValidationUtil;
@@ -28,6 +28,7 @@ import java.util.Optional;
 import static ru.javaops.topjava2.util.validation.ValidationUtil.assureIdConsistent;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = AdminRestaurantController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 @CacheConfig(cacheNames = "restaurants")
@@ -35,22 +36,19 @@ public class AdminRestaurantController extends AbstractRestaurantController {
 
     static final String REST_URL = "/api/admin/restaurants";
 
-    private UniqueNameAddressValidator nameValidator;
-
-    public AdminRestaurantController(RestaurantRepository repository, UniqueNameAddressValidator nameValidator) {
-        this.repository = repository;
-        this.nameValidator = nameValidator;
-    }
-
-    @InitBinder
-    protected void initBinder(WebDataBinder binder) {
-        binder.addValidators(nameValidator);
-    }
+    private final Converter<Restaurant, RestaurantTo> restaurantToConverter;
+    private final Converter<List<Restaurant>, List<RestaurantTo>> restaurantListToConverter;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Restaurant> get(@PathVariable int id) {
+    public RestaurantTo get(@PathVariable int id) {
         log.info("get{}", id);
-        return ResponseEntity.of(repository.findById(id));
+        return restaurantToConverter.convert(repository.getExisted(id));
+    }
+
+    @GetMapping
+    public List<RestaurantTo> getAll() {
+        log.info("getAll");
+        return restaurantListToConverter.convert(repository.findAll(Sort.by(Sort.Direction.ASC, "name")));
     }
 
     @DeleteMapping("/{id}")
@@ -61,21 +59,15 @@ public class AdminRestaurantController extends AbstractRestaurantController {
         repository.deleteExisted(id);
     }
 
-    @GetMapping
-    public List<Restaurant> getAll() {
-        log.info("getAll");
-        return repository.findAll(Sort.by(Sort.Direction.ASC, "name"));
-    }
-
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody RestaurantTo restaurantTo) {
+    public ResponseEntity<RestaurantTo> createWithLocation(@Valid @RequestBody RestaurantTo restaurantTo) {
         log.info("create{}", restaurantTo);
         ValidationUtil.checkNew(restaurantTo);
         Restaurant created = repository.save(RestaurantUtil.createNewFromTo(restaurantTo));
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL)
                 .buildAndExpand(created.getId()).toUri();
-        return ResponseEntity.created(uriOfNewResource).body(created);
+        return ResponseEntity.created(uriOfNewResource).body(restaurantToConverter.convert(created));
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)

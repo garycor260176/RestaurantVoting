@@ -50,38 +50,37 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = ADMIN_MAIL)
     void get() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL_SLASH + RESTAURANT1_ID))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(RESTAURANT_MATCHER.contentJson(restaurant1));
     }
 
     @Test
-    @WithUserDetails(ADMIN_MAIL)
-    void getWithCurrentLunches() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL_SLASH + RESTAURANT1_ID + "/with-lunches"))
-                .andExpect(status().isOk())
+    @WithUserDetails(value = ADMIN_MAIL)
+    void getAll() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL))
                 .andDo(print())
+                .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RESTAURANT_WITH_LUNCH_MATCHER.contentJson(restaurant1));
+                .andExpect(RESTAURANT_MATCHER.contentJson(restaurants));
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void getNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL_SLASH + NOT_FOUND_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 
     @Test
     @WithUserDetails(ADMIN_MAIL)
-    void getAllWithCurrentLunches() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL_SLASH + "all-with-lunches"))
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RESTAURANT_MATCHER.contentJson(restaurant2, restaurant4, restaurant1, restaurant3));
-    }
-
-    @Test
-    @WithUserDetails(ADMIN_MAIL)
-    void getWithLunchesOnAnyDate() throws Exception {
+    void getWithLunchesAnyDate() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL_SLASH + (RESTAURANT1_ID + 3) + "/history")
                 .param("date", "2024-10-10"))
-                .andExpect(status().isOk())
                 .andDo(print())
+                .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(RESTAURANT_WITH_LUNCH_MATCHER.contentJson(restaurant4_on_20241010));
     }
@@ -94,14 +93,24 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(status().isUnprocessableEntity());
     }
 
-
     @Test
-    @WithUserDetails(value = ADMIN_MAIL)
-    void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL))
+    @WithUserDetails(ADMIN_MAIL)
+    void getWithCurrentLunches() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL_SLASH + RESTAURANT1_ID + "/with-lunches"))
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RESTAURANT_MATCHER.contentJson(restaurants));
+                .andExpect(RESTAURANT_WITH_LUNCH_MATCHER.contentJson(restaurant1));
+    }
+
+    @Test
+    @WithUserDetails(ADMIN_MAIL)
+    void getAllWithCurrentLunches() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL_SLASH + "all-with-lunches"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(RESTAURANT_MATCHER.contentJson(restaurant2, restaurant4, restaurant1, restaurant3));
     }
 
     @Test
@@ -111,6 +120,14 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
         assertFalse(repository.findById(RESTAURANT1_ID).isPresent());
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void deleteNotFound() throws Exception {
+        perform(MockMvcRequestBuilders.delete(REST_URL_SLASH + NOT_FOUND_ID))
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -132,49 +149,9 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
-    void update() throws Exception {
-        RestaurantTo updated = new RestaurantTo(null, "La Bottega Siciliana", "Москва, Охотный ряд, 2(ТГ Модный сезон)");
-        perform(MockMvcRequestBuilders.put(REST_URL_SLASH + RESTAURANT1_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(updated)))
-                .andExpect(status().isNoContent());
-
-        assertEquals(repository.getExisted(RESTAURANT1_ID), RestaurantUtil.updateFromTo(new Restaurant(restaurant1), updated));
-    }
-
-    @Test
-    @WithUserDetails(value = ADMIN_MAIL)
-    void getNotFound() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL_SLASH + NOT_FOUND_ID))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @WithUserDetails(value = ADMIN_MAIL)
-    void deleteNotFound() throws Exception {
-        perform(MockMvcRequestBuilders.delete(REST_URL_SLASH + NOT_FOUND_ID))
-                .andDo(print())
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @WithUserDetails(value = ADMIN_MAIL)
     void createInvalid() throws Exception {
         RestaurantTo invalid = new RestaurantTo(null, "Турандот", "мало");
         perform(MockMvcRequestBuilders.post(REST_URL)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(invalid)))
-                .andDo(print())
-                .andExpect(status().isUnprocessableEntity());
-    }
-
-    @Test
-    @WithUserDetails(value = ADMIN_MAIL)
-    void updateInvalid() throws Exception {
-        RestaurantTo invalid = new RestaurantTo(null, null, null);
-        invalid.setName("");
-        perform(MockMvcRequestBuilders.put(REST_URL_SLASH + RESTAURANT1_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(invalid)))
                 .andDo(print())
@@ -192,6 +169,31 @@ class AdminRestaurantControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(content().string(containsString(UniqueNameAddressValidator.EXCEPTION_DUPLICATE_NAME_AND_ADDRESS_OF_RESTAURANT)));
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void update() throws Exception {
+        RestaurantTo updated = new RestaurantTo(null, "La Bottega Siciliana", "Москва, Охотный ряд, 2(ТГ Модный сезон)");
+        perform(MockMvcRequestBuilders.put(REST_URL_SLASH + RESTAURANT1_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated)))
+                .andDo(print())
+                .andExpect(status().isNoContent());
+
+        assertEquals(repository.getExisted(RESTAURANT1_ID), RestaurantUtil.updateFromTo(new Restaurant(restaurant1), updated));
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void updateInvalid() throws Exception {
+        RestaurantTo invalid = new RestaurantTo(null, null, null);
+        invalid.setName("");
+        perform(MockMvcRequestBuilders.put(REST_URL_SLASH + RESTAURANT1_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(invalid)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
     }
 
     @Test

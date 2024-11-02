@@ -15,5 +15,4 @@ public class RestaurantUtil {
         restaurant.setAddress(restaurantTo.getAddress());
         return restaurant;
     }
-
 }

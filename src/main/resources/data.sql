@@ -48,7 +48,8 @@ VALUES
     ('Костромские щи', '2024-10-10', 790.00, 4);
 
 INSERT INTO VOTE (date, restaurant_id, user_id)
-VALUES (now(), 1, 1),
+VALUES
+       (now(), 1, 1),
        (now(), 2, 2),
 
        (now()-1, 3, 1),

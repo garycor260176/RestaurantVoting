@@ -1,7 +1,11 @@
 package ru.javaops.topjava2.web.lunch;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,33 +20,36 @@ import ru.javaops.topjava2.util.LunchUtil;
 import ru.javaops.topjava2.util.validation.ValidationUtil;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@Slf4j
+@RequiredArgsConstructor
 @RequestMapping(value = LunchController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
+@Slf4j
+@CacheConfig(cacheNames = "lunches")
 public class LunchController {
     static final String REST_URL = "/api/admin/lunches";
 
+    @Autowired
     private final LunchRepository repository;
 
+    @Autowired
     private final RestaurantRepository restaurantRepository;
 
-    public LunchController(LunchRepository repository, RestaurantRepository restaurantRepository) {
-        this.repository = repository;
-        this.restaurantRepository = restaurantRepository;
-    }
+    private final Converter<Lunch, LunchTo> lunchToConverter;
+    private final Converter<List<Lunch>, List<LunchTo>> lunchListToConverter;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Lunch> get(@PathVariable int id) {
+    public LunchTo get(@PathVariable int id) {
         log.info("get{}", id);
-        return ResponseEntity.of(repository.findById(id));
+        return lunchToConverter.convert(repository.getExisted(id));
     }
 
     @GetMapping
-    public List<Lunch> getAll() {
+    public List<LunchTo> getAll(int restaurantId) {
         log.info("getAll");
-        return repository.findAll();
+        return lunchListToConverter.convert(repository.getMenu(restaurantId, LocalDate.now()));
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -50,7 +57,7 @@ public class LunchController {
         log.info("create{}", lunchTo);
         ValidationUtil.checkNew(lunchTo);
         Lunch created = LunchUtil.createNewFromTo(lunchTo);
-        created.setRestaurant(restaurantRepository.findById(restaurantId).get());
+        created.setRestaurant(restaurantRepository.getExisted(restaurantId));
         repository.save(created);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
@@ -61,12 +68,11 @@ public class LunchController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
-    public void update(@Valid @RequestBody LunchTo lunchTo, @PathVariable int id, Integer restaurantId) {
+    public void update(@Valid @RequestBody LunchTo lunchTo, @PathVariable int id) {
         log.info("update {} with id {}", lunchTo, id);
         ValidationUtil.assureIdConsistent(lunchTo, id);
         Lunch lunch = repository.getExisted(id);
         Lunch updated = LunchUtil.updateFromTo(lunch, lunchTo);
-        updated.setRestaurant(restaurantRepository.findById(restaurantId).get());
         repository.save(updated);
     }
 

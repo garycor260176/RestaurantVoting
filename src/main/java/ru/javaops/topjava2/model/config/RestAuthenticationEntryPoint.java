@@ -1,4 +1,4 @@
-package ru.javaops.topjava2.config;
+package ru.javaops.topjava2.model.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
