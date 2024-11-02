@@ -81,8 +81,7 @@ public class UserVoteControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = USER_MAIL)
     void revotingUserAfterTime() throws Exception {
-        LocalTime time = LocalTime.now().minusMinutes(10);
-        if(!time.isAfter(LocalTime.now())) {
+        if(!LocalTime.now().minusMinutes(10).isAfter(LocalTime.now())) {
             ValidationUtil.setCUT_OFF_TIME(LocalTime.now().minusMinutes(10));
         }
 
