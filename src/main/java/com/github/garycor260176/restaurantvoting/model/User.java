@@ -12,8 +12,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -53,8 +51,6 @@ public class User extends NamedEntity implements HasIdAndEmail {
             uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "role"}, name = "uk_user_role"))
     @Column(name = "role")
     @ElementCollection(fetch = FetchType.EAGER)
-    @JoinColumn
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Role> roles;
 
     public User(User u) {

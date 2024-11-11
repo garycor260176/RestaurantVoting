@@ -28,7 +28,7 @@ import org.springframework.context.annotation.Configuration;
                         - admin@gmail.com / admin<br>
                         - guest@gmail.com / guest</p>
                         """,
-                contact = @Contact(name = "Igor Polnikov", email = "i-polnikov@yandex.ru")
+                contact = @Contact(name = "Igor Polnikov")
         ),
         security = @SecurityRequirement(name = "basicAuth")
 )
