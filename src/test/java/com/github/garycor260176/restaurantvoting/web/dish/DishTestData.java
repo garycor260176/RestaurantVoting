@@ -1,6 +1,7 @@
 package com.github.garycor260176.restaurantvoting.web.dish;
 
 import com.github.garycor260176.restaurantvoting.model.Dish;
+import com.github.garycor260176.restaurantvoting.to.DishTo;
 import com.github.garycor260176.restaurantvoting.web.MatcherFactory;
 
 import java.math.BigDecimal;
@@ -48,5 +49,12 @@ public class DishTestData {
 
     public static final Dish dish24 = new Dish(DISH1_ID + 23, "Жюльен с грибами", LocalDate.of(2024, 10, 10), new BigDecimal("650.00"));
     public static final Dish dish25 = new Dish(DISH1_ID + 24, "Костромские щи", LocalDate.of(2024, 10, 10), new BigDecimal("790.00"));
+
+    public static final DishTo newDishTo = new DishTo(null, "Новое блюдо для ресторана 2", LocalDate.now(), new BigDecimal("1000.00"));
+    public static final DishTo newDishToInvalid = new DishTo(null, null, null, null);
+    public static final DishTo newDishToDuplicate = new DishTo(null, dish1.getName(), dish1.getDish_date(), dish1.getPrice());
+    public static final DishTo updateDishTo = new DishTo(null, dish1.getName(), dish1.getDish_date(), new BigDecimal("1000000.00"));
+    public static final DishTo updateDishToInvalid = new DishTo(null, "", LocalDate.now(), new BigDecimal("100.00"));
+    public static final DishTo updateDishToDuplicate = new DishTo(null, dish4.getName(), dish4.getDish_date(), new BigDecimal("100.00"));
 
 }

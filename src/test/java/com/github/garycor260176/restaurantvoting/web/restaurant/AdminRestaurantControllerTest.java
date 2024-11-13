@@ -2,7 +2,6 @@ package com.github.garycor260176.restaurantvoting.web.restaurant;
 
 import com.github.garycor260176.restaurantvoting.model.Restaurant;
 import com.github.garycor260176.restaurantvoting.repository.RestaurantRepository;
-import com.github.garycor260176.restaurantvoting.to.RestaurantTo;
 import com.github.garycor260176.restaurantvoting.util.JsonUtil;
 import com.github.garycor260176.restaurantvoting.util.RestaurantUtil;
 import com.github.garycor260176.restaurantvoting.web.AbstractControllerTest;
@@ -144,16 +143,14 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void createWithLocation() throws Exception {
-        RestaurantTo restaurantTo = new RestaurantTo(null, "Обломов", "Москва, 1-ый Монетчиковский пер., д. 5");
-        Restaurant newRestaurant = RestaurantUtil.createNewFromTo(restaurantTo);
         ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(newRestaurant)))
+                .content(JsonUtil.writeValue(newRestaurantTo)))
                 .andDo(print())
                 .andExpect(status().isCreated());
-
         Restaurant created = RESTAURANT_MATCHER.readFromJson(action);
         int newId = created.id();
+        Restaurant newRestaurant = RestaurantUtil.createNewFromTo(newRestaurantTo);
         newRestaurant.setId(newId);
         RESTAURANT_MATCHER.assertMatch(created, newRestaurant);
         RESTAURANT_MATCHER.assertMatch(repository.getExisted(newId), newRestaurant);
@@ -162,10 +159,9 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void createInvalid() throws Exception {
-        RestaurantTo invalid = new RestaurantTo(null, "Турандот", "мало");
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(invalid)))
+                .content(JsonUtil.writeValue(newRestaurantToInvalid)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
     }
@@ -174,10 +170,9 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = ADMIN_MAIL)
     void createDuplicate() throws Exception {
-        RestaurantTo expected = new RestaurantTo(null, restaurant3.getName(), restaurant3.getAddress());
         perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(expected)))
+                .content(JsonUtil.writeValue(newRestaurantToDuplicate)))
                 .andDo(print())
                 .andExpect(status().isConflict());
     }
@@ -185,23 +180,20 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void update() throws Exception {
-        RestaurantTo updated = new RestaurantTo(null, "La Bottega Siciliana", "Москва, Охотный ряд, 2(ТГ Модный сезон)");
         perform(MockMvcRequestBuilders.put(REST_URL_SLASH + RESTAURANT1_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(updated)))
+                .content(JsonUtil.writeValue(updateRestaurantTo)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
-        assertEquals(repository.getExisted(RESTAURANT1_ID), RestaurantUtil.updateFromTo(new Restaurant(restaurant1), updated));
+        assertEquals(repository.getExisted(RESTAURANT1_ID), RestaurantUtil.updateFromTo(new Restaurant(restaurant1), updateRestaurantTo));
     }
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void updateInvalid() throws Exception {
-        RestaurantTo invalid = new RestaurantTo(null, null, null);
-        invalid.setName("");
         perform(MockMvcRequestBuilders.put(REST_URL_SLASH + RESTAURANT1_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(invalid)))
+                .content(JsonUtil.writeValue(updateRestaurantToInvalid)))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
     }
@@ -210,10 +202,9 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Transactional(propagation = Propagation.NEVER)
     @WithUserDetails(value = ADMIN_MAIL)
     void updateDuplicate() throws Exception {
-        RestaurantTo updated = new RestaurantTo(null, restaurant3.getName(), restaurant3.getAddress());
         perform(MockMvcRequestBuilders.put(REST_URL_SLASH + RESTAURANT1_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(updated)))
+                .content(JsonUtil.writeValue(updateRestaurantToDuplicate)))
                 .andDo(print())
                 .andExpect(status().isConflict());
     }

@@ -1,6 +1,7 @@
 package com.github.garycor260176.restaurantvoting.web.restaurant;
 
 import com.github.garycor260176.restaurantvoting.model.Restaurant;
+import com.github.garycor260176.restaurantvoting.to.RestaurantTo;
 import com.github.garycor260176.restaurantvoting.web.MatcherFactory;
 
 import java.util.List;
@@ -23,6 +24,13 @@ public class RestaurantTestData {
     public static final Restaurant restaurant1_all = new Restaurant(restaurant1);
 
     public static final List<Restaurant> restaurants = List.of(restaurant2, restaurant4, restaurant1, restaurant3);
+
+    public static final RestaurantTo newRestaurantTo = new RestaurantTo(null, "Обломов", "Москва, 1-ый Монетчиковский пер., д. 5");
+    public static final RestaurantTo newRestaurantToDuplicate = new RestaurantTo(null, restaurant3.getName(), restaurant3.getAddress());
+    public static final RestaurantTo newRestaurantToInvalid = new RestaurantTo(null, "Турандот", "мало");
+    public static final RestaurantTo updateRestaurantTo = new RestaurantTo(null, "La Bottega Siciliana", "Москва, Охотный ряд, 2(ТГ Модный сезон)");
+    public static final RestaurantTo updateRestaurantToInvalid = new RestaurantTo(null, null, null);
+    public static final RestaurantTo updateRestaurantToDuplicate = new RestaurantTo(null, restaurant3.getName(), restaurant3.getAddress());
 
     static {
         restaurant1_all.setDishes(List.of(

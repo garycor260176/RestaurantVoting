@@ -15,8 +15,4 @@ public class RestaurantUtil {
         restaurant.setAddress(restaurantTo.getAddress());
         return restaurant;
     }
-
-    public static RestaurantTo getTo(Restaurant r) {
-        return new RestaurantTo(r.id(), r.getName(), r.getAddress());
-    }
 }

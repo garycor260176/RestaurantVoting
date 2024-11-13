@@ -44,4 +44,9 @@ public class Dish extends NamedEntity {
         this(id, name, dish_date, price);
         this.restaurant = restaurant;
     }
+
+    public Dish(Dish dish) {
+        this(dish.id, dish.name, dish.dish_date, dish.price);
+    }
+
 }
