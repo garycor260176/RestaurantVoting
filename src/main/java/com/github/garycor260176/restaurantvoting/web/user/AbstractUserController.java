@@ -4,11 +4,13 @@ import com.github.garycor260176.restaurantvoting.model.User;
 import com.github.garycor260176.restaurantvoting.repository.UserRepository;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
+@CacheConfig(cacheNames = "users")
 public abstract class AbstractUserController {
     protected final Logger log = getLogger(getClass());
 
