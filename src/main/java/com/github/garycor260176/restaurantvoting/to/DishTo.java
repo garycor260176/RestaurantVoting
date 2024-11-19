@@ -13,14 +13,14 @@ import java.time.LocalDate;
 @ToString(callSuper = true)
 public class DishTo extends NamedTo {
     @NotNull
-    LocalDate dish_date;
+    LocalDate date;
 
     @NotNull
     BigDecimal price;
 
-    public DishTo(Integer id, String name, LocalDate dish_date, BigDecimal price) {
+    public DishTo(Integer id, String name, LocalDate date, BigDecimal price) {
         super(id, name);
-        this.dish_date = dish_date;
+        this.date = date;
         this.price = price;
     }
 }

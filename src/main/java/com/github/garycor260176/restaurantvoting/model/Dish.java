@@ -32,16 +32,16 @@ public class Dish extends NamedEntity {
 
     @NotNull
     @Column(name = "dish_date", nullable = false)
-    private LocalDate dish_date;
+    private LocalDate date;
 
-    public Dish(Integer id, String name, LocalDate dish_date, BigDecimal price) {
+    public Dish(Integer id, String name, LocalDate date, BigDecimal price) {
         super(id, name);
         this.price = price;
-        this.dish_date = dish_date;
+        this.date = date;
     }
 
     public Dish(Dish dish) {
-        this(dish.id, dish.name, dish.dish_date, dish.price);
+        this(dish.id, dish.name, dish.date, dish.price);
     }
 
 }

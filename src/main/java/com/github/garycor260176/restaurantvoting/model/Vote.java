@@ -21,7 +21,7 @@ import java.time.LocalDate;
 public class Vote extends BaseEntity {
     @Column(name = "vote_date", nullable = false)
     @NotNull
-    private LocalDate vote_date;
+    private LocalDate date;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurant_id", nullable = false)
@@ -35,14 +35,14 @@ public class Vote extends BaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
-    public Vote(Integer id, LocalDate vote_date, Restaurant restaurant, User user) {
+    public Vote(Integer id, LocalDate date, Restaurant restaurant, User user) {
         super(id);
-        this.vote_date = vote_date;
+        this.date = date;
         this.restaurant = restaurant;
         this.user = user;
     }
 
-    public Vote(LocalDate vote_date, Restaurant restaurant, User user) {
-        this(null, vote_date, restaurant, user);
+    public Vote(LocalDate date, Restaurant restaurant, User user) {
+        this(null, date, restaurant, user);
     }
 }

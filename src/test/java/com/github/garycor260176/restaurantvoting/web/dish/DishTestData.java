@@ -52,9 +52,9 @@ public class DishTestData {
 
     public static final DishTo newDishTo = new DishTo(null, "Новое блюдо для ресторана 2", LocalDate.now(), new BigDecimal("1000.00"));
     public static final DishTo newDishToInvalid = new DishTo(null, null, null, null);
-    public static final DishTo newDishToDuplicate = new DishTo(null, dish1.getName(), dish1.getDish_date(), dish1.getPrice());
-    public static final DishTo updateDishTo = new DishTo(null, dish1.getName(), dish1.getDish_date(), new BigDecimal("1000000.00"));
+    public static final DishTo newDishToDuplicate = new DishTo(null, dish1.getName(), dish1.getDate(), dish1.getPrice());
+    public static final DishTo updateDishTo = new DishTo(null, dish1.getName(), dish1.getDate(), new BigDecimal("1000000.00"));
     public static final DishTo updateDishToInvalid = new DishTo(null, "", LocalDate.now(), new BigDecimal("100.00"));
-    public static final DishTo updateDishToDuplicate = new DishTo(null, dish4.getName(), dish4.getDish_date(), new BigDecimal("100.00"));
+    public static final DishTo updateDishToDuplicate = new DishTo(null, dish4.getName(), dish4.getDate(), new BigDecimal("100.00"));
 
 }

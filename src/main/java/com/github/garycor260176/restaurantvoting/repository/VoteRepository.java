@@ -13,6 +13,6 @@ public interface VoteRepository extends BaseRepository<Vote> {
     @Query("select v from Vote v where v.user.id = ?1")
     List<Vote> getAllById(int userId);
 
-    @Query("select v from Vote v where v.user.id = ?1 and v.vote_date = ?2")
+    @Query("select v from Vote v where v.user.id = ?1 and v.date = ?2")
     Optional<Vote> findByIdAndDate(int userId, LocalDate vote_date);
 }
