@@ -27,20 +27,16 @@ public class DishTestData {
     public static final Dish dish10 = new Dish(DISH1_ID + 9, "Крем-суп из мускусной тыквы с мясом краба, 280г", LocalDate.now().minusDays(2), new BigDecimal("1340.00"));
 
     public static final Dish dish11 = new Dish(DISH1_ID + 10, "Корейка молодого ягненка", LocalDate.now(), new BigDecimal("3100.00"));
-    public static final Dish dish12 = new Dish(DISH1_ID + 11, "Корейка молодого ягненка", LocalDate.now().minusDays(1), new BigDecimal("3100.00"));
 
     public static final Dish dish13 = new Dish(DISH1_ID + 12, "Говядина по-строгановски", LocalDate.now(), new BigDecimal("2200.00"));
 
     public static final Dish dish14 = new Dish(DISH1_ID + 13, "Борщ с говяжьей грудинкой", LocalDate.now(), new BigDecimal("1200.00"));
-    public static final Dish dish15 = new Dish(DISH1_ID + 14, "Борщ с говяжьей грудинкой", LocalDate.now().minusDays(2), new BigDecimal("1200.00"));
 
     public static final Dish dish16 = new Dish(DISH1_ID + 15, "Уха рыбацкая", LocalDate.now(), new BigDecimal("1400.00"));
 
     public static final Dish dish17 = new Dish(DISH1_ID + 16, "Баклажан запеченный с сыром", LocalDate.now(), new BigDecimal("1720.00"));
-    public static final Dish dish18 = new Dish(DISH1_ID + 17, "Баклажан запеченный с сыром", LocalDate.now().minusDays(1), new BigDecimal("1720.00"));
 
     public static final Dish dish19 = new Dish(DISH1_ID + 18, "Суп Аргентинский фасолевый", LocalDate.now(), new BigDecimal("500.00"));
-    public static final Dish dish20 = new Dish(DISH1_ID + 19, "Суп Аргентинский фасолевый", LocalDate.now().minusDays(2), new BigDecimal("500.00"));
 
     public static final Dish dish21 = new Dish(DISH1_ID + 20, "Гаспачо с креветками", LocalDate.now(), new BigDecimal("1250.00"));
 
