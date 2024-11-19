@@ -40,11 +40,6 @@ public class Dish extends NamedEntity {
         this.dish_date = dish_date;
     }
 
-    public Dish(Integer id, String name, LocalDate dish_date, BigDecimal price, Restaurant restaurant) {
-        this(id, name, dish_date, price);
-        this.restaurant = restaurant;
-    }
-
     public Dish(Dish dish) {
         this(dish.id, dish.name, dish.dish_date, dish.price);
     }

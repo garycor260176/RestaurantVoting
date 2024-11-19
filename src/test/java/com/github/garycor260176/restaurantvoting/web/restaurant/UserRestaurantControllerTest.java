@@ -60,4 +60,26 @@ public class UserRestaurantControllerTest extends AbstractControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(RESTAURANT_WITH_DISH_MATCHER.contentJson(restaurants));
     }
+
+    @Test
+    @WithUserDetails(value = USER_MAIL)
+    void findByAddress() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL_SLASH + "find")
+                .param("address", "Москва,Кутузовский"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(RESTAURANT_MATCHER.contentJson(foundedRestaurantsByAddress));
+    }
+
+    @Test
+    @WithUserDetails(value = USER_MAIL)
+    void findByName() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL_SLASH + "find")
+                .param("name", "Ресторан"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(RESTAURANT_MATCHER.contentJson(foundedRestaurantsByName));
+    }
 }

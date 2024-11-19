@@ -1,12 +1,10 @@
 package com.github.garycor260176.restaurantvoting.web.restaurant;
 
 import com.github.garycor260176.restaurantvoting.model.Restaurant;
+import jakarta.annotation.Nullable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,5 +35,10 @@ public class UserRestaurantController extends AbstractRestaurantController {
     @GetMapping("/with-current-dishes")
     public List<Restaurant> getAllWithCurrentDishes() {
         return super.getAllWithCurrentDishes();
+    }
+
+    @GetMapping("/find")
+    public List<Restaurant> find(@RequestParam @Nullable String name, @RequestParam @Nullable String address) {
+        return super.findByNameAndAddress(name, address);
     }
 }

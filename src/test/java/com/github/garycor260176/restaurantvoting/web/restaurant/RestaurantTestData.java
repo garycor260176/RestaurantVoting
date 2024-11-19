@@ -23,7 +23,11 @@ public class RestaurantTestData {
 
     public static final Restaurant restaurant1_all = new Restaurant(restaurant1);
 
+    public static final Restaurant restaurant1_period = new Restaurant(restaurant1);
+
     public static final List<Restaurant> restaurants = List.of(restaurant2, restaurant4, restaurant1, restaurant3);
+    public static final List<Restaurant> foundedRestaurantsByAddress = List.of(restaurant4);
+    public static final List<Restaurant> foundedRestaurantsByName = List.of(restaurant2, restaurant4, restaurant1);
 
     public static final RestaurantTo newRestaurantTo = new RestaurantTo(null, "Обломов", "Москва, 1-ый Монетчиковский пер., д. 5");
     public static final RestaurantTo newRestaurantToDuplicate = new RestaurantTo(null, restaurant3.getName(), restaurant3.getAddress());
@@ -34,9 +38,10 @@ public class RestaurantTestData {
 
     static {
         restaurant1_all.setDishes(List.of(
-                dish8, dish1, dish6, dish4,
-                dish9, dish2, dish7,
-                dish10, dish3, dish5
+                dish8, dish9, dish10, dish1, dish2, dish3, dish6, dish7, dish4, dish5
+        ));
+        restaurant1_period.setDishes(List.of(
+                dish9, dish10, dish2, dish3, dish7, dish5
         ));
 
         restaurant1.setDishes(List.of(dish8, dish1, dish6, dish4));

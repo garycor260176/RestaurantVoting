@@ -9,6 +9,8 @@ import com.github.garycor260176.restaurantvoting.util.validation.ValidationUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +40,9 @@ public class DishController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Caching(evict = {
+            @CacheEvict(value = "restaurants", allEntries = true)
+    })
     public ResponseEntity<Dish> createWithLocation(@Valid @RequestBody DishTo dishTo, Integer restaurantId) {
         log.info("create {} in restaurant {}", dishTo, restaurantId);
         ValidationUtil.checkNew(dishTo);
@@ -53,6 +58,9 @@ public class DishController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "restaurants", allEntries = true)
+    })
     public void update(@Valid @RequestBody DishTo dishTo, @PathVariable int id) {
         log.info("update {} with id {}", dishTo, id);
         assureIdConsistent(dishTo, id);
@@ -63,6 +71,9 @@ public class DishController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "restaurants", allEntries = true)
+    })
     public void delete(@PathVariable int id) {
         log.info("delete {}", id);
         repository.deleteExisted(id);

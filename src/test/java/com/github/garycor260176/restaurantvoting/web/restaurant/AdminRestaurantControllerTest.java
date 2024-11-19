@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 import static com.github.garycor260176.restaurantvoting.web.restaurant.AdminRestaurantController.REST_URL;
 import static com.github.garycor260176.restaurantvoting.web.restaurant.RestaurantTestData.*;
 import static com.github.garycor260176.restaurantvoting.web.user.UserTestData.ADMIN_MAIL;
@@ -86,11 +88,23 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void getWithAllDishes() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL_SLASH + RESTAURANT1_ID + "/all-history"))
+        perform(MockMvcRequestBuilders.get(REST_URL_SLASH + RESTAURANT1_ID + "/history"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(RESTAURANT_WITH_DISH_MATCHER.contentJson(restaurant1_all));
+    }
+
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void getWithDishesInPeriod() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL_SLASH + RESTAURANT1_ID + "/history")
+                .param("fromDate", LocalDate.now().minusDays(2).toString())
+                .param("toDate", LocalDate.now().minusDays(1).toString()))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(RESTAURANT_WITH_DISH_MATCHER.contentJson(restaurant1_period));
     }
 
     @Test
@@ -104,21 +118,11 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @WithUserDetails(value = ADMIN_MAIL)
-    void getWithDishesOnDate() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL_SLASH + (RESTAURANT1_ID + 3) + "/history")
-                .param("date", "2024-10-10"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(RESTAURANT_WITH_DISH_MATCHER.contentJson(restaurant4_on_20241010));
-    }
-
-    @Test
     @WithUserDetails(ADMIN_MAIL)
     void getWithDishesOnDateNotFound() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL_SLASH + (RESTAURANT1_ID + 3) + "/history")
-                .param("date", "2024-10-11"))
+                .param("fromDate", "2024-10-11")
+                .param("toDate", "2024-10-11"))
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
     }
