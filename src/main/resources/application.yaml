@@ -19,9 +19,15 @@ spring:
     # ImMemory
     url: jdbc:h2:mem:voting
     #    tcp: jdbc:h2:tcp://localhost:9092/mem:voting
-    #url: jdbc:h2:file:/data/voting
+    #    url: jdbc:h2:file:~/test
     username: sa
     password:
+    driverClassName: org.h2.Driver
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 
   # Jackson Serialization Issue Resolver
   jackson:
@@ -39,7 +45,7 @@ spring:
 logging:
   level:
     root: WARN
-    ru.javaops.topjava2: DEBUG
+    com.github.garycor260176.restaurantvoting: DEBUG
     org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver: DEBUG
 
 server.servlet:

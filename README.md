@@ -2,8 +2,9 @@ Restaurant Voting
 ===============================
 
 **Technical requirement:**
+
 ```
-Design and implement a REST API using Hibernate/Spring/SpringMVC (Spring-Boot preferred!) without frontend.
+Design and implement a REST API using Spring-Boot/Spring Data JPA without frontend.
 
 The task is:
 
@@ -22,13 +23,14 @@ Each restaurant provides a new menu each day.
 As a result, provide a link to github repository. It should contain the code, README.md with API documentation and couple curl commands to test it (better - link to Swagger).
 
 P.S.: Make sure everything works with latest version that is on github :)
-P.P.S.: Assume that your API will be used by a frontend developer to build frontend on top of that.
-```
+P.P.S.: Assume that your API will be used by a frontend developer to build frontend on top of that.```
 
-[REST API documentation](http://localhost:8080/)  
+[REST API documentation](http://localhost:8080/)
 
 Credentials:
 ```
 User:  user@yandex.ru / password
 Admin: admin@gmail.com / admin
 Guest: guest@gmail.com / guest
+
+```
