@@ -92,7 +92,7 @@ public class VoteControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = GUEST_MAIL)
     void createWithNotExistRestaurant() throws Exception {
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+        perform(MockMvcRequestBuilders.post(REST_URL)
                 .param("restaurantId", "10"))
                 .andExpect(status().isNotFound())
                 .andDo(print());
@@ -109,7 +109,7 @@ public class VoteControllerTest extends AbstractControllerTest {
 
     @Test
     @WithUserDetails(value = USER_MAIL)
-    void changeVote() throws Exception {
+    void update() throws Exception {
         if (ValidationUtil.cutoffTime.isAfter(LocalTime.now())) {
             perform(MockMvcRequestBuilders.put(REST_URL)
                     .param("restaurantId", "2"))
