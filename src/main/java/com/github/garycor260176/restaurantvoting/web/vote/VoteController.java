@@ -39,14 +39,14 @@ public class VoteController {
     @GetMapping
     public List<Vote> getAll() {
         int userId = SecurityUtil.authId();
-        log.info("get votes for user{}", userId);
+        log.info("get votes for user {}", userId);
         return voteRepository.getAllById(userId);
     }
 
     @GetMapping("/current")
     public ResponseEntity<Vote> get() {
         int userId = SecurityUtil.authId();
-        log.info("getTodayVote for user{}", userId);
+        log.info("get current vote for user {}", userId);
         return ResponseEntity.of(voteRepository.findByIdAndDate(userId, LocalDate.now()));
     }
 
@@ -54,6 +54,7 @@ public class VoteController {
     @Transactional
     public ResponseEntity<Vote> create(Integer restaurantId) {
         int userId = SecurityUtil.authId();
+        log.info("create vote for user {}, restaurant = {}", userId, restaurantId);
         Vote created = new Vote(LocalDate.now(), restaurantRepository.getExisted(restaurantId), userRepository.getExisted(userId));
         voteRepository.save(created);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -66,6 +67,7 @@ public class VoteController {
     @Transactional
     public void update(Integer restaurantId) {
         Vote vote = get().getBody();
+        log.info("update vote = {}, set restaurant = {}", vote.getId(), restaurantId);
         Restaurant restaurant = restaurantRepository.getExisted(restaurantId);
         ValidationUtil.checkNotNull(vote);
         ValidationUtil.checkTime();
