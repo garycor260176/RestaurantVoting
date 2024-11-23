@@ -97,7 +97,7 @@ public class AdminRestaurantControllerTest extends AbstractControllerTest {
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
-    void getWithDishesInPeriod() throws Exception {
+    void getWithDishesBetween() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL_SLASH + RESTAURANT1_ID + "/history")
                 .param("fromDate", LocalDate.now().minusDays(2).toString())
                 .param("toDate", LocalDate.now().minusDays(1).toString()))

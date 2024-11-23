@@ -43,6 +43,7 @@ public class DishController {
     @Caching(evict = {
             @CacheEvict(value = "restaurants", allEntries = true)
     })
+    @Transactional
     public ResponseEntity<Dish> createWithLocation(@Valid @RequestBody DishTo dishTo, Integer restaurantId) {
         log.info("create {} in restaurant {}", dishTo, restaurantId);
         ValidationUtil.checkNew(dishTo);

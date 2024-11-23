@@ -1,10 +1,14 @@
 package com.github.garycor260176.restaurantvoting.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -15,7 +19,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
 public class Restaurant extends NamedEntity {
     @Column(name = "address", nullable = false)
     @NotBlank
@@ -26,16 +29,12 @@ public class Restaurant extends NamedEntity {
     @JoinColumn(name = "restaurant_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonManagedReference
-    @ToString.Exclude
+    @JsonInclude(value = JsonInclude.Include.NON_EMPTY, content = JsonInclude.Include.NON_NULL)
     private List<Dish> dishes;
 
     public Restaurant(Integer id, String name, String address) {
         super(id, name);
         this.address = address;
-    }
-
-    public Restaurant(String name, String address) {
-        this(null, name, address);
     }
 
     public Restaurant(Restaurant r) {

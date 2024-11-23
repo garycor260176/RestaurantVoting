@@ -37,8 +37,8 @@ public class AbstractRestaurantController {
         return repository.getAllWithDishesOnDate(LocalDate.now());
     }
 
-    public List<Restaurant> findByNameAndAddress(String name, String address) {
+    public List<Restaurant> getByNameAndAddress(String name, String address) {
         log.info("search restaurant without dishes by name = {} and address = {}", name, address);
-        return repository.findByNameAndAddressIgnoreCase(name != null ? name : "", address != null ? address : "");
+        return repository.getByNameAndAddressIgnoreCase(name != null ? name : "", address != null ? address : "");
     }
 }

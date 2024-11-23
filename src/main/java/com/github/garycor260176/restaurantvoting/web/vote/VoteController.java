@@ -1,5 +1,6 @@
 package com.github.garycor260176.restaurantvoting.web.vote;
 
+import com.github.garycor260176.restaurantvoting.error.NotFoundException;
 import com.github.garycor260176.restaurantvoting.model.Restaurant;
 import com.github.garycor260176.restaurantvoting.model.Vote;
 import com.github.garycor260176.restaurantvoting.repository.RestaurantRepository;
@@ -7,7 +8,10 @@ import com.github.garycor260176.restaurantvoting.repository.UserRepository;
 import com.github.garycor260176.restaurantvoting.repository.VoteRepository;
 import com.github.garycor260176.restaurantvoting.util.validation.ValidationUtil;
 import com.github.garycor260176.restaurantvoting.web.SecurityUtil;
+import jakarta.annotation.Nullable;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +22,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+
+import static com.github.garycor260176.restaurantvoting.util.DateUtil.atDayOrMax;
+import static com.github.garycor260176.restaurantvoting.util.DateUtil.atDayOrMin;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = VoteController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
 public class VoteController {
@@ -29,25 +38,26 @@ public class VoteController {
     private final RestaurantRepository restaurantRepository;
     private final UserRepository userRepository;
 
-    public VoteController(VoteRepository voteRepository, RestaurantRepository restaurantRepository,
-                          UserRepository userRepository) {
-        this.voteRepository = voteRepository;
-        this.restaurantRepository = restaurantRepository;
-        this.userRepository = userRepository;
-    }
-
     @GetMapping
     public List<Vote> getAll() {
         int userId = SecurityUtil.authId();
         log.info("get votes for user {}", userId);
-        return voteRepository.getAllById(userId);
+        return voteRepository.getByUser(userId);
     }
 
     @GetMapping("/current")
     public ResponseEntity<Vote> get() {
         int userId = SecurityUtil.authId();
         log.info("get current vote for user {}", userId);
-        return ResponseEntity.of(voteRepository.findByIdAndDate(userId, LocalDate.now()));
+        return ResponseEntity.of(voteRepository.getByUserAndDate(userId, LocalDate.now()));
+    }
+
+    @GetMapping("/between")
+    public List<Vote> getBetween(@Nullable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
+                                 @Nullable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
+        int userId = SecurityUtil.authId();
+        log.info("get votes in period {} - {}", fromDate, toDate);
+        return voteRepository.getByUserBetween(userId, atDayOrMin(fromDate), atDayOrMax(toDate));
     }
 
     @PostMapping()
@@ -67,6 +77,9 @@ public class VoteController {
     @Transactional
     public void update(Integer restaurantId) {
         Vote vote = get().getBody();
+        if (Objects.isNull(vote)) {
+            throw new NotFoundException("Not found current vote");
+        }
         log.info("update vote = {}, set restaurant = {}", vote.getId(), restaurantId);
         Restaurant restaurant = restaurantRepository.getExisted(restaurantId);
         ValidationUtil.checkNotNull(vote);

@@ -14,6 +14,7 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static com.github.garycor260176.restaurantvoting.web.user.UserTestData.GUEST_MAIL;
@@ -45,6 +46,18 @@ public class VoteControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(VOTE_MATCHER.contentJson(userVotes));
+    }
+
+    @Test
+    @WithUserDetails(value = USER_MAIL)
+    void getUserVotesBetween() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL_SLASH + "between")
+                .param("fromDate", LocalDate.now().minusDays(2).toString())
+                .param("toDate", LocalDate.now().minusDays(1).toString()))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(VOTE_MATCHER.contentJson(userVotesBetween));
     }
 
     @Test
@@ -110,7 +123,7 @@ public class VoteControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = USER_MAIL)
     void update() throws Exception {
-        if (ValidationUtil.cutoffTime.isAfter(LocalTime.now())) {
+        if (ValidationUtil.CUTOFF_TIME.isAfter(LocalTime.now())) {
             perform(MockMvcRequestBuilders.put(REST_URL)
                     .param("restaurantId", "2"))
                     .andExpect(status().isNoContent())

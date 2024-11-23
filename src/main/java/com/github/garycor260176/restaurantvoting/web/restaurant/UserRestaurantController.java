@@ -39,6 +39,6 @@ public class UserRestaurantController extends AbstractRestaurantController {
 
     @GetMapping("/find")
     public List<Restaurant> find(@RequestParam @Nullable String name, @RequestParam @Nullable String address) {
-        return super.findByNameAndAddress(name, address);
+        return super.getByNameAndAddress(name, address);
     }
 }

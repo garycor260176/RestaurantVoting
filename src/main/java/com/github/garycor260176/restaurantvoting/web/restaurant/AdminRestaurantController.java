@@ -61,7 +61,7 @@ public class AdminRestaurantController extends AbstractRestaurantController {
     public ResponseEntity<Restaurant> getWithDishesInPeriod(@PathVariable int id,
                                                             @Nullable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
                                                             @Nullable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate toDate) {
-        log.info("get restaurant {} with dishes in period {} - {}", id, fromDate, toDate);
+        log.info("get restaurant {} with dishes between {} - {}", id, fromDate, toDate);
         return ResponseEntity.of(Optional.of(repository.getWithDishesBetween(id, atDayOrMin(fromDate), atDayOrMax(toDate))
                 .orElseThrow(() -> new IllegalRequestDataException("Not found at this period"))));
     }
@@ -81,6 +81,7 @@ public class AdminRestaurantController extends AbstractRestaurantController {
     @Caching(evict = {
             @CacheEvict(value = "restaurants", allEntries = true)
     })
+    @Transactional
     public ResponseEntity<Restaurant> createWithLocation(@Valid @RequestBody RestaurantTo restaurantTo) {
         log.info("create {}", restaurantTo);
         ValidationUtil.checkNew(restaurantTo);
@@ -106,7 +107,6 @@ public class AdminRestaurantController extends AbstractRestaurantController {
 
     @GetMapping("/find")
     public List<Restaurant> find(@RequestParam @Nullable String name, @RequestParam @Nullable String address) {
-        return super.findByNameAndAddress(name, address);
+        return super.getByNameAndAddress(name, address);
     }
-
 }

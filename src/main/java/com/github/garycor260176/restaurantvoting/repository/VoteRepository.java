@@ -10,9 +10,13 @@ import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface VoteRepository extends BaseRepository<Vote> {
-    @Query("select v from Vote v where v.user.id = ?1")
-    List<Vote> getAllById(int userId);
+    @Query("select v from Vote v where v.user.id = ?1 order by v.date DESC")
+    List<Vote> getByUser(int userId);
 
     @Query("select v from Vote v where v.user.id = ?1 and v.date = ?2")
-    Optional<Vote> findByIdAndDate(int userId, LocalDate vote_date);
+    Optional<Vote> getByUserAndDate(int userId, LocalDate vote_date);
+
+    @Query("select v from Vote v where v.user.id = ?1 and v.date>=?2 and v.date<=?3 order by v.date DESC")
+    List<Vote> getByUserBetween(int userId, LocalDate fromDate, LocalDate toDate);
+
 }

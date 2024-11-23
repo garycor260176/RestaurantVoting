@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 
 @UtilityClass
 public class ValidationUtil {
-    public static final LocalTime cutoffTime = LocalTime.of(11, 0);
+    public static final LocalTime CUTOFF_TIME = LocalTime.of(11, 0);
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     public static void checkNew(HasId bean) {
@@ -35,8 +35,8 @@ public class ValidationUtil {
     }
 
     public static void checkTime() {
-        if (cutoffTime.isBefore(CurrentDateTime.getCurrentTime())) {
-            throw new IllegalRequestDataException("You can't change your vote after " + cutoffTime.format(TIME_FORMATTER) + "!");
+        if (CUTOFF_TIME.isBefore(CurrentDateTime.getCurrentTime())) {
+            throw new IllegalRequestDataException("You can't change your vote after " + CUTOFF_TIME.format(TIME_FORMATTER) + "!");
         }
     }
 }
