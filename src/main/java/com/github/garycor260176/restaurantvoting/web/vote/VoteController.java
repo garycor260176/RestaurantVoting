@@ -24,8 +24,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
-import static com.github.garycor260176.restaurantvoting.util.DateUtil.atDayOrMax;
-import static com.github.garycor260176.restaurantvoting.util.DateUtil.atDayOrMin;
+import static com.github.garycor260176.restaurantvoting.util.DateUtil.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,7 +41,7 @@ public class VoteController {
     public List<Vote> getAll() {
         int userId = SecurityUtil.authId();
         log.info("get votes for user {}", userId);
-        return voteRepository.getByUser(userId);
+        return voteRepository.getByUserBetween(userId, MIN_DATE, MAX_DATE);
     }
 
     @GetMapping("/current")

@@ -10,9 +10,6 @@ import java.util.Optional;
 
 @Transactional(readOnly = true)
 public interface VoteRepository extends BaseRepository<Vote> {
-    @Query("select v from Vote v where v.user.id = ?1 order by v.date DESC")
-    List<Vote> getByUser(int userId);
-
     @Query("select v from Vote v where v.user.id = ?1 and v.date = ?2")
     Optional<Vote> getByUserAndDate(int userId, LocalDate vote_date);
 
